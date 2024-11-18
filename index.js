@@ -1,4 +1,5 @@
 const https = require('https');
+const http = require('http');
 const httpProxy = require('http-proxy');
 const fs = require('fs');
 
@@ -26,7 +27,7 @@ const targetMap = {
     '/taart': 'http://localhost:80/taart'
 };
 
-const defaultTarget = "http://vps.klimdanick.nl:80"
+const defaultTarget = "http://vps.klimdanick.nl:8085"
 
 // Create the reverse proxy server
 const server = https.createServer(options, (req, res) => {
