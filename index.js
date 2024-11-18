@@ -40,7 +40,7 @@ const server = https.createServer(options, (req, res) => {
 
     // Forward the request to the appropriate target
     const splitIndex = req.url.slice(1).indexOf("/")
-    if (splitIndex >= 0) req.url = req.url.slice(splitIndex)
+    if (splitIndex >= 0) req.url = req.url.slice(splitIndex + 1)
     else req.url = ""
     console.log(`target url: ${proxyTarget}${req.url}`);
 
