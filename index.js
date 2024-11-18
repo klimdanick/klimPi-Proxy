@@ -1,5 +1,12 @@
-const http = require('http');
+const https = require('https');
 const httpProxy = require('http-proxy');
+const fs = require('fs');
+
+// SSL/TLS Certificates
+const options = {
+    key: fs.readFileSync('/certs/private.key'),
+    cert: fs.readFileSync('/certs/certificate.crt')
+};
 
 // Create a proxy server
 const proxy = httpProxy.createProxyServer({});
@@ -11,7 +18,7 @@ const targetMap = {
 };
 
 // Create the reverse proxy server
-const server = http.createServer((req, res) => {
+const server = http.createServer(options, (req, res) => {
     // Match routes to target servers
     const target = Object.keys(targetMap).find((prefix) =>
         req.url.startsWith(prefix)
