@@ -22,7 +22,7 @@ const proxy = httpProxy.createProxyServer({});
 // Map of routes to backend servers
 const targetMap = {
     '/notities': 'http://localhost:8080', // Route `/api` forwarded to backend server 1
-    '/': 'https://localhost:443', // Route `/static` forwarded to backend server 2
+    '/admin': 'https://localhost:443', // Route `/static` forwarded to backend server 2
 };
 
 // Create the reverse proxy server
