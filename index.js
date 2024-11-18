@@ -22,8 +22,10 @@ const proxy = httpProxy.createProxyServer({});
 // Map of routes to backend servers
 const targetMap = {
     '/notities': 'http://localhost:8080', // Route `/api` forwarded to backend server 1
-    '/admin': 'https://localhost:443', // Route `/static` forwarded to backend server 2
+    '/admin': 'http://localhost:443', // Route `/static` forwarded to backend server 2
 };
+
+const defaultTarget = "http://vps.klimdanick.nl:80"
 
 // Create the reverse proxy server
 const server = https.createServer(options, (req, res) => {
@@ -32,18 +34,15 @@ const server = https.createServer(options, (req, res) => {
         req.url.startsWith(prefix)
     );
 
-    if (target) {
-        // Forward the request to the appropriate target
-        proxy.web(req, res, { target: targetMap[target] }, (err) => {
-            console.error('Proxy error:', err);
-            res.writeHead(500);
-            res.end('Internal Server Error');
-        });
-    } else {
-        // If no route matches, return 404
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('Not Found');
-    }
+    // If route matches, use corresponding target; otherwise, use default
+    const proxyTarget = target ? targetMap[target] : defaultTarget;
+
+    // Forward the request to the appropriate target
+    proxy.web(req, res, { target: proxyTarget }, (err) => {
+        console.error('Proxy error:', err);
+        res.writeHead(500);
+        res.end('Internal Server Error');
+    });
 });
 
 // Listen on port 3000
