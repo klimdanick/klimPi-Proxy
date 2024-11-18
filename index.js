@@ -21,8 +21,8 @@ const proxy = httpProxy.createProxyServer({});
 
 // Map of routes to backend servers
 const targetMap = {
-    '/notities': 'localhost:8080', // Route `/api` forwarded to backend server 1
-    '/': 'localhost:443', // Route `/static` forwarded to backend server 2
+    '/notities': 'vps.klimdanick.nl:8080', // Route `/api` forwarded to backend server 1
+    '/': 'vps.klimdanick.nl:443', // Route `/static` forwarded to backend server 2
 };
 
 // Create the reverse proxy server
