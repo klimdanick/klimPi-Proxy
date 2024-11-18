@@ -1,4 +1,4 @@
-const http = require('http');
+const https = require('https');
 const httpProxy = require('http-proxy');
 const fs = require('fs');
 
@@ -26,7 +26,7 @@ const targetMap = {
 };
 
 // Create the reverse proxy server
-const server = http.createServer((req, res) => {
+const server = https.createServer(options, (req, res) => {
     // Match routes to target servers
     const target = Object.keys(targetMap).find((prefix) =>
         req.url.startsWith(prefix)
