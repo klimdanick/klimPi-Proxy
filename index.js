@@ -3,10 +3,18 @@ const httpProxy = require('http-proxy');
 const fs = require('fs');
 
 // SSL/TLS Certificates
-const options = {
-    key: fs.readFileSync('/certs/private.key'),
-    cert: fs.readFileSync('/certs/certificate.crt')
-};
+let options;
+try {
+    options = {
+        key: fs.readFileSync('/certs/private.key'),
+        cert: fs.readFileSync('/certs/certificate.crt')
+    };
+} catch (err) {
+    options = {
+        key: fs.readFileSync('certs/private.key'),
+        cert: fs.readFileSync('certs/certificate.crt')
+    };
+}
 
 // Create a proxy server
 const proxy = httpProxy.createProxyServer({});
