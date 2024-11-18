@@ -30,6 +30,7 @@ const defaultTarget = "http://vps.klimdanick.nl:80"
 // Create the reverse proxy server
 const server = https.createServer(options, (req, res) => {
     // Match routes to target servers
+    console.log(`request url: ${req.url}`);
     const target = Object.keys(targetMap).find((prefix) =>
         req.url.startsWith(prefix)
     );
