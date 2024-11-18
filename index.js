@@ -37,8 +37,12 @@ const server = https.createServer(options, (req, res) => {
 
     // If route matches, use corresponding target; otherwise, use default
     const proxyTarget = target ? targetMap[target] : defaultTarget;
-    console.log(`target url: ${proxyTarget}`);
+
     // Forward the request to the appropriate target
+    const splitIndex = req.url.slice(1).indexOf("/")
+    req.url = req.url.slice(splitIndex)
+    console.log(`target url: ${proxyTarget}${req.url}`);
+
     proxy.web(req, res, { target: proxyTarget }, (err) => {
         console.error('Proxy error:', err);
         res.writeHead(500);
