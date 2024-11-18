@@ -47,6 +47,6 @@ const server = https.createServer(options, (req, res) => {
 });
 
 // Listen on port 3000
-server.listen(8085, () => {
-    console.log('Reverse proxy is running on http://localhost:8085');
+server.listen(443, () => {
+    console.log('Reverse proxy is running on http://localhost:443');
 });
