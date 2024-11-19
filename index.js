@@ -26,7 +26,7 @@ const targetMap = {
     '/admin': 'http://localhost:8085', // Route `/static` forwarded to backend server 2
     '/taart': 'http://localhost:80/taart',
     '/api-docs': 'http://localhost:8080/api-docs/',
-    '/assetto': 'http://localhot:8772'
+    '/assetto': 'http://localhost:8772'
 };
 
 const defaultTarget = "http://vps.klimdanick.nl:8085"
