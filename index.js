@@ -24,7 +24,8 @@ const proxy = httpProxy.createProxyServer({});
 const targetMap = {
     '/notities': 'http://localhost:8080', // Route `/api` forwarded to backend server 1
     '/admin': 'http://localhost:8085', // Route `/static` forwarded to backend server 2
-    '/taart': 'http://localhost:80/taart'
+    '/taart': 'http://localhost:80/taart',
+    '/api-docs': 'http://localhost:8080/api-docs/'
 };
 
 const defaultTarget = "http://vps.klimdanick.nl:8085"
