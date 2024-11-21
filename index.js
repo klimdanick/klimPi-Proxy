@@ -29,10 +29,10 @@ const targetMap = {
     '/assetto': 'http://localhost:8772',
     '/klimtities': 'http://localhost:8088',
     '/ELEGEN': 'http://localhost:8085/ELEGEN',
+    '/fileList': 'http://localhost:8085/fileList',
     '/file': 'http://localhost:8085/file',
     '/download': 'http://localhost:8085/download',
-    '/upload': 'http://localhost:8085/upload',
-    '/fileList': 'http://localhost:8085/fileList'
+    '/upload': 'http://localhost:8085/upload'
 };
 
 const defaultTarget = "http://vps.klimdanick.nl:8085"
