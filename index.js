@@ -28,7 +28,6 @@ const targetMap = {
     '/api-docs': 'http://localhost:8080/api-docs/',
     '/assetto': 'http://localhost:8772',
     '/klimtities': 'http://localhost:8088',
-    '/ELEGEN': 'http://localhost:8085/ELEGEN'
 };
 
 const defaultTarget = "http://vps.klimdanick.nl:8085"
