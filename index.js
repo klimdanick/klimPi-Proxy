@@ -32,6 +32,7 @@ const targetMap = {
     '/file': 'http://localhost:8085/file',
     '/download': 'http://localhost:8085/download',
     '/upload': 'http://localhost:8085/upload',
+    '/fileList': 'http://localhost:8085/fileList'
 };
 
 const defaultTarget = "http://vps.klimdanick.nl:8085"
