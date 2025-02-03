@@ -13,17 +13,17 @@ for (let i = 2; i < process.argv.length; i++) {
 
 let options;
 // SSL/TLS Certificates
-// try {
-//     options = {
-//         key: fs.readFileSync('/certs/private.key'),
-//         cert: fs.readFileSync('/certs/certificate.crt')
-//     };
-// } catch (err) {
-//     options = {
-//         key: fs.readFileSync('certs/private.key'),
-//         cert: fs.readFileSync('certs/certificate.crt')
-//     };
-// }
+try {
+    options = {
+        key: fs.readFileSync('/certs/private.key'),
+        cert: fs.readFileSync('/certs/certificate.crt')
+    };
+} catch (err) {
+    options = {
+        key: fs.readFileSync('certs/private.key'),
+        cert: fs.readFileSync('certs/certificate.crt')
+    };
+}
 
 // Create a proxy server
 const proxy = httpProxy.createProxyServer({});
