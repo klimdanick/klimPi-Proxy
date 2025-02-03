@@ -28,16 +28,21 @@ try {
 // Create a proxy server
 const proxy = httpProxy.createProxyServer({});
 
-// Map of routes to backend servers
-const targetMap = {
-    '/admin': 'http://localhost:8085',
-    '/elementaljs': 'http://localhost:80'
-};
-
-const defaultTarget = "http://localhost:8085"
+const defaultTarget = "http://localhost:18085"
 
 // Create the reverse proxy server
 const server = http.createServer(options, (req, res) => {
+
+    let targetMap = {};
+
+    let processes = JSON.parse(fs.readFileSync("../processes.json"))["processes"];
+    for (let i = 1; i < processes.length; i++) {
+        let p = processes[i];
+        let target = `http://localhost:${p.port}`;
+        targetMap[p.url] = target;
+    }
+
+    // console.log(targetMap);
 
     // Match routes to target servers
     console.log(`request url: ${req.url}, ${req.socket.remoteAddress}, ${new Date().toISOString()}`);
@@ -75,6 +80,16 @@ const server = http.createServer(options, (req, res) => {
 
 // Listen for WebSocket connections (proxy will handle upgrades)
 server.on('upgrade', (req, socket, head) => {
+
+    let targetMap = {};
+
+    let processes = JSON.parse(fs.readFileSync("../processes.json"))["processes"];
+    for (let i = 1; i < processes.length; i++) {
+        let p = processes[i];
+        let target = `http://localhost:${p.port}`;
+        targetMap[p.url] = target;
+    }
+
     // Match routes to target servers
     console.log(`request url: ${req.url}, ${req.socket.remoteAddress}, ${new Date().toISOString()}`);
     const target = Object.keys(targetMap).find((prefix) =>
