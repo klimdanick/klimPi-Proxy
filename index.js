@@ -15,8 +15,8 @@ let options;
 // SSL/TLS Certificates
 try {
     options = {
-        key: fs.readFileSync('/certs/private.key'),
-        cert: fs.readFileSync('/certs/certificate.crt')
+        key: fs.readFileSync('/etc/letsencrypt/archive/vps.klimdanick.nl/privkey1.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/archive/vps.klimdanick.nl/cert1.pem')
     };
 } catch (err) {
     options = {
