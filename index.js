@@ -28,7 +28,7 @@ try {
 // Create a proxy server
 const proxy = httpProxy.createProxyServer({});
 
-const defaultTarget = ""
+let defaultTarget = ""
 
 // Create the reverse proxy server
 const server = http.createServer(options, (req, res) => {
