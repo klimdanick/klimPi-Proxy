@@ -112,5 +112,5 @@ server.on('upgrade', (req, socket, head) => {
 
 // Listen on port 3000
 server.listen(args.port, () => {
-    console.log(`Reverse proxy is running on http://localhost:${args.port}`);
+    console.log(`Reverse proxy is running on port ${args.port}`);
 });
