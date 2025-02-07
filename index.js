@@ -28,7 +28,7 @@ try {
 // Create a proxy server
 const proxy = httpProxy.createProxyServer({});
 
-const defaultTarget = "http://localhost:18085"
+const defaultTarget = ""
 
 // Create the reverse proxy server
 const server = http.createServer(options, (req, res) => {
@@ -40,6 +40,7 @@ const server = http.createServer(options, (req, res) => {
         let p = processes[i];
         let target = `http://localhost:${p.port}`;
         targetMap[p.url] = target;
+        if (p.default) defaultTarget = target;
     }
 
     // console.log(targetMap);
