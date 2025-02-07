@@ -42,7 +42,7 @@ const server = http.createServer(options, (req, res) => {
         targetMap[p.url] = target;
     }
 
-    // console.log(targetMap);
+    console.log(targetMap);
 
     // Match routes to target servers
     console.log(`request url: ${req.url}, ${req.socket.remoteAddress}, ${new Date().toISOString()}`);
