@@ -35,9 +35,17 @@ const server = http.createServer(options, (req, res) => {
 
     let targetMap = {};
 
-    let processes = JSON.parse(fs.readFileSync("../processes.json"))["processes"];
+    let data = JSON.parse(fs.readFileSync("../processes.json"));
+    let processes = data["processes"];
+    let proxyData = data["proxy"];
     for (let i = 1; i < processes.length; i++) {
         let p = processes[i];
+        let target = `http://localhost:${p.port}`;
+        targetMap[p.url] = target;
+        if (p.default) defaultTarget = target;
+    }
+    for (let i = 1; i < proxyData.length; i++) {
+        let p = proxyData[i];
         let target = `http://localhost:${p.port}`;
         targetMap[p.url] = target;
         if (p.default) defaultTarget = target;
