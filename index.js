@@ -31,7 +31,7 @@ const proxy = httpProxy.createProxyServer({});
 let defaultTarget = ""
 
 // Create the reverse proxy server
-const server = http.createServer(options, (req, res) => {
+const server = https.createServer(options, (req, res) => {
 
     let targetMap = {};
 
