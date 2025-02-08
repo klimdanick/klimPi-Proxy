@@ -36,6 +36,7 @@ const server = https.createServer(options, (req, res) => {
     let targetMap = {};
 
     let data = JSON.parse(fs.readFileSync("../processes.json"));
+    console.log(data);
     let processes = data["processes"];
     let proxyData = data["proxy"];
     for (let i = 1; i < processes.length; i++) {
@@ -51,7 +52,7 @@ const server = https.createServer(options, (req, res) => {
         if (p.default) defaultTarget = target;
     }
 
-    // console.log(targetMap);
+    console.log(targetMap);
 
     // Match routes to target servers
     console.log(`request url: ${req.url}, ${req.socket.remoteAddress}, ${new Date().toISOString()}`);
@@ -92,11 +93,20 @@ server.on('upgrade', (req, socket, head) => {
 
     let targetMap = {};
 
-    let processes = JSON.parse(fs.readFileSync("../processes.json"))["processes"];
+    let data = JSON.parse(fs.readFileSync("../processes.json"));
+    console.log(data);
+    let processes = data["processes"];
+    let proxyData = data["proxy"];
     for (let i = 1; i < processes.length; i++) {
         let p = processes[i];
         let target = `http://localhost:${p.port}`;
         targetMap[p.url] = target;
+    }
+    for (let i = 1; i < proxyData.length; i++) {
+        let p = proxyData[i];
+        let target = `http://localhost:${p.port}`;
+        targetMap[p.url] = target;
+        if (p.default) defaultTarget = target;
     }
 
     // Match routes to target servers
