@@ -41,6 +41,7 @@ const server = https.createServer(options, (req, res) => {
     let proxyData = data["proxy"];
     for (let i = 1; i < processes.length; i++) {
         let p = processes[i];
+        if (!p.viaProxy) continue;
         let target = `http://localhost:${p.port}`;
         targetMap[p.url] = target;
         if (p.default) defaultTarget = target;
@@ -99,6 +100,7 @@ server.on('upgrade', (req, socket, head) => {
     let proxyData = data["proxy"];
     for (let i = 1; i < processes.length; i++) {
         let p = processes[i];
+        if (!p.viaProxy) continue;
         let target = `http://localhost:${p.port}`;
         targetMap[p.url] = target;
     }
