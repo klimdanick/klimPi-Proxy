@@ -46,7 +46,7 @@ const server = https.createServer(options, (req, res) => {
         targetMap[p.url] = target;
         if (p.default) defaultTarget = target;
     }
-    for (let i = 0; i < proxyData.length; i++) {
+    for (let i = 0; proxyData && i < proxyData.length; i++) {
         let p = proxyData[i];
         let target = `http://localhost:${p.port}`;
         targetMap[p.url] = target;
@@ -104,7 +104,7 @@ server.on('upgrade', (req, socket, head) => {
         let target = `http://localhost:${p.port}`;
         targetMap[p.url] = target;
     }
-    for (let i = 0; i < proxyData.length; i++) {
+    for (let i = 0; i < proxyData && proxyData.length; i++) {
         let p = proxyData[i];
         let target = `http://localhost:${p.port}`;
         targetMap[p.url] = target;
