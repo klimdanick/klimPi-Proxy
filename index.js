@@ -129,7 +129,7 @@ server.on('upgrade', (req, socket, head) => {
     console.log(`target url: ${proxyTarget}${req.url}`);
     try {
         proxy.ws(req, socket, head, { target: proxyTarget });
-    } catch(err) {}
+    } catch(err) {console.error(err)}
 });
 
 // Listen on port 3000
