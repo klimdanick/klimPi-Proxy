@@ -2,7 +2,7 @@ const https = require('https');
 const http = require('http');
 const httpProxy = require('http-proxy');
 const fs = require('fs');
-let args = {"port": 8085};
+let args = {"port": 443};
 
 for (let i = 2; i < process.argv.length; i++) {
   if (process.argv[i].startsWith("--")) {
@@ -32,6 +32,7 @@ let defaultTarget = ""
 
 // Create the reverse proxy server
 const server = https.createServer(options, (req, res) => {
+    console.log("tijmen dom: " + req.url);
 
     let targetMap = {};
 
