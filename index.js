@@ -92,7 +92,7 @@ const server = https.createServer(options, (req, res) => {
 
 // Listen for WebSocket connections (proxy will handle upgrades)
 server.on('upgrade', (req, socket, head) => {
-
+    console.log("tijmen dom: " + req.url);
     let targetMap = {};
 
     let data = JSON.parse(fs.readFileSync("../processes.json"));
