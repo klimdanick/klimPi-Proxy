@@ -1,18 +1,16 @@
 const https = require('https');
-const http = require('http');
 const httpProxy = require('http-proxy');
 const fs = require('fs');
-let args = {"port": 443};
+const args = { port: 443 };
 
 for (let i = 2; i < process.argv.length; i++) {
   if (process.argv[i].startsWith("--")) {
-    args[process.argv[i].substring(2)] = process.argv[i+1];
-    i+=2;
+    args[process.argv[i].substring(2)] = process.argv[i + 1];
+    i += 2;
   }
 }
 
 let options;
-// SSL/TLS Certificates
 try {
     options = {
         key: fs.readFileSync('/etc/letsencrypt/archive/vps.klimdanick.nl/privkey1.pem'),
@@ -25,114 +23,98 @@ try {
     };
 }
 
-// Create a proxy server
-const proxy = httpProxy.createProxyServer({});
+const proxy = httpProxy.createProxyServer({ ws: true });
 
-let defaultTarget = ""
+let defaultTarget = "";
 
-// Create the reverse proxy server
-const server = https.createServer(options, (req, res) => {
-    console.log("tijmen dom: " + req.url);
-
+// Function to load target mapping dynamically
+const loadTargetMap = () => {
     let targetMap = {};
+    try {
+        let data = JSON.parse(fs.readFileSync("../processes.json"));
+        let processes = data["processes"] || [];
+        let proxyData = data["proxy"] || [];
 
-    let data = JSON.parse(fs.readFileSync("../processes.json"));
-    //console.log(data);
-    let processes = data["processes"];
-    let proxyData = data["proxy"];
-    for (let i = 1; i < processes.length; i++) {
-        let p = processes[i];
-        if (!p.viaProxy) continue;
-        let target = `http://localhost:${p.port}`;
-        targetMap[p.url] = target;
-        if (p.default) defaultTarget = target;
+        for (let i = 1; i < processes.length; i++) {
+            let p = processes[i];
+            if (!p.viaProxy) continue;
+            let target = `http://localhost:${p.port}`;
+            targetMap[p.url] = target;
+            if (p.default) defaultTarget = target;
+        }
+
+        for (let i = 0; i < proxyData.length; i++) {
+            let p = proxyData[i];
+            let target = `http://localhost:${p.port}`;
+            targetMap[p.url] = target;
+            if (p.default) defaultTarget = target;
+        }
+    } catch (err) {
+        console.error("Error loading processes.json:", err);
     }
-    for (let i = 0; proxyData && i < proxyData.length; i++) {
-        let p = proxyData[i];
-        let target = `http://localhost:${p.port}`;
-        targetMap[p.url] = target;
-        if (p.default) defaultTarget = target;
-    }
+    return targetMap;
+};
 
-    //console.log(targetMap);
+// HTTPS Server with Reverse Proxy
+const server = https.createServer(options, (req, res) => {
+    console.log(`Request: ${req.url} from ${req.socket.remoteAddress}`);
 
-    // Match routes to target servers
-    console.log(`request url: ${req.url}, ${req.socket.remoteAddress}, ${new Date().toISOString()}`);
-    const target = Object.keys(targetMap).find((prefix) =>
-        req.url.startsWith(prefix)
-    );
-
-    // If route matches, use corresponding target; otherwise, use default
+    let targetMap = loadTargetMap();
+    const target = Object.keys(targetMap).find((prefix) => req.url.startsWith(prefix));
     let splitIndex = target ? target.length : 0;
     if (target && target.endsWith("/")) splitIndex -= 1;
     const proxyTarget = target ? targetMap[target] : defaultTarget;
 
-    // Forward the request to the appropriate target
-    if (splitIndex >= 0) req.url = req.url.slice(splitIndex)
-    //else req.url = ""
-    console.log(`target url: ${proxyTarget}${req.url}`);
+    if (splitIndex >= 0) req.url = req.url.slice(splitIndex);
+    
+    console.log(`Proxying to: ${proxyTarget}${req.url}`);
 
-    if (req.headers['upgrade'] && req.headers['upgrade'].toLowerCase() === 'websocket') {
-        console.log('WebSocket request detected');
-        
-        // Proxy the WebSocket upgrade request to your WebSocket server
-        try {
-            proxy.ws(req, res, { target: proxyTarget });
-        } catch(err) {}
-        return;
-    }
     try {
         proxy.web(req, res, { target: proxyTarget }, (err) => {
             console.error('Proxy error:', err);
-            res.writeHead(500);
-            res.end('Internal Server Error');
+            res.writeHead(502);
+            res.end('Bad Gateway');
         });
-    } catch(err) {}
+    } catch (err) {
+        console.error('Proxy error:', err);
+    }
 });
 
-// Listen for WebSocket connections (proxy will handle upgrades)
+// WebSocket Support for Socket.IO
 server.on('upgrade', (req, socket, head) => {
-    console.log("tijmen dom: " + req.url);
-    let targetMap = {};
-
-    let data = JSON.parse(fs.readFileSync("../processes.json"));
-    //console.log(data);
-    let processes = data["processes"];
-    let proxyData = data["proxy"];
-    for (let i = 1; i < processes.length; i++) {
-        let p = processes[i];
-        if (!p.viaProxy) continue;
-        let target = `http://localhost:${p.port}`;
-        targetMap[p.url] = target;
-    }
-    for (let i = 0; i < proxyData && proxyData.length; i++) {
-        let p = proxyData[i];
-        let target = `http://localhost:${p.port}`;
-        targetMap[p.url] = target;
-        if (p.default) defaultTarget = target;
-    }
-
-    // Match routes to target servers
-    console.log(`request url: ${req.url}, ${req.socket.remoteAddress}, ${new Date().toISOString()}`);
-    const target = Object.keys(targetMap).find((prefix) =>
-        req.url.startsWith(prefix)
-    );
-
-    // If route matches, use corresponding target; otherwise, use default
+    console.log(`WebSocket Upgrade: ${req.url}`);
+    
+    let targetMap = loadTargetMap();
+    const target = Object.keys(targetMap).find((prefix) => req.url.startsWith(prefix));
     let splitIndex = target ? target.length : 0;
     if (target && target.endsWith("/")) splitIndex -= 1;
     const proxyTarget = target ? targetMap[target] : defaultTarget;
 
-    // Forward the request to the appropriate target
-    if (splitIndex >= 0) req.url = req.url.slice(splitIndex)
-    //else req.url = ""
-    console.log(`target url: ${proxyTarget}${req.url}`);
+    if (splitIndex >= 0) req.url = req.url.slice(splitIndex);
+
+    console.log(`Proxying WebSocket to: ${proxyTarget}${req.url}`);
+    
     try {
-        proxy.ws(req, socket, head, { target: proxyTarget });
-    } catch(err) {console.error(err)}
+        proxy.ws(req, socket, head, { 
+            target: proxyTarget, 
+            changeOrigin: true, 
+            ws: true 
+        });
+    } catch (err) {
+        console.error('WebSocket Proxy Error:', err);
+    }
 });
 
-// Listen on port 3000
+// Error Handling
+proxy.on('error', (err, req, res) => {
+    console.error('Proxy error:', err);
+    if (res && !res.headersSent) {
+        res.writeHead(502);
+        res.end('Bad Gateway');
+    }
+});
+
+// Start Server
 server.listen(args.port, () => {
     console.log(`Reverse proxy is running on port ${args.port}`);
 });
