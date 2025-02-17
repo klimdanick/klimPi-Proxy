@@ -13,8 +13,8 @@ for (let i = 2; i < process.argv.length; i++) {
 let options;
 try {
     options = {
-        key: fs.readFileSync('/etc/letsencrypt/archive/vps.klimdanick.nl/privkey1.pem'),
-        cert: fs.readFileSync('/etc/letsencrypt/archive/vps.klimdanick.nl/cert1.pem')
+        key: fs.readFileSync('/etc/letsencrypt/archive/vps.klimdanick.nl-0002/privkey1.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/archive/vps.klimdanick.nl-0002/cert1.pem')
     };
 } catch (err) {
     options = {
